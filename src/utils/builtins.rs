@@ -1,5 +1,7 @@
 pub mod clear;
+pub mod cpuinfo;
 pub mod echo;
+pub mod ginfo;
 pub mod halt;
 pub mod help;
 pub mod panic;
