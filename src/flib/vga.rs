@@ -1,3 +1,4 @@
+use core::arch::asm;
 use core::fmt;
 use core::ptr::{read_volatile, write_volatile};
 
@@ -14,6 +15,26 @@ impl VgaWriter {
         }
     }
 
+    #[inline]
+    unsafe fn outb(port: u16, val: u8) {
+        asm!(
+            "out dx, al",
+            in("dx") port,
+            in("al") val,
+            options(nomem, nostack, preserves_flags)
+        );
+    }
+
+    pub fn update_hardware_cursor(&self) {
+        unsafe {
+            Self::outb(0x3D4, 0x0F);
+            Self::outb(0x3D5, (self.cursor & 0xFF) as u8);
+
+            Self::outb(0x3D4, 0x0E);
+            Self::outb(0x3D5, ((self.cursor >> 8) & 0xFF) as u8);
+        }
+    }
+
     pub fn clear_screen(&mut self) {
         const TOTAL: usize = 80 * 25;
 
@@ -26,6 +47,7 @@ impl VgaWriter {
             }
         }
         self.cursor = 0;
+        self.update_hardware_cursor();
     }
 
     pub fn scroll(&mut self) {
@@ -67,7 +89,6 @@ impl VgaWriter {
             if self.cursor >= 80 * 25 {
                 self.scroll();
             }
-
             return;
         }
 
@@ -88,6 +109,7 @@ impl VgaWriter {
                 write_volatile(ptr, b' ');
                 write_volatile(ptr.add(1), 0x0F);
             }
+            self.update_hardware_cursor();
         }
     }
 }
@@ -97,6 +119,7 @@ impl fmt::Write for VgaWriter {
         for &byte in s.as_bytes() {
             self.putchar(byte);
         }
+        self.update_hardware_cursor();
         Ok(())
     }
 }
