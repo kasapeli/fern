@@ -1,6 +1,6 @@
-use crate::println;
+use crate::kprintln;
 
 pub fn exec() {
-    println!("fern a0.1");
-    println!("fern shell a0.1");
+    kprintln!("fern a0.1");
+    kprintln!("fern shell a0.1");
 }

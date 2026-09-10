@@ -1,8 +1,8 @@
-use crate::println;
+use crate::kprintln;
 use core::arch::asm;
 
 pub fn exec() -> ! {
-    println!("see you again!");
+    kprintln!("see you again!");
     unsafe {
         loop {
             let mut status: u8;

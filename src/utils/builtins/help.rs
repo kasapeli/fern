@@ -1,5 +1,5 @@
-use crate::println;
+use crate::kprintln;
 
 pub fn exec() {
-    println!("version, help, clear, reboot, panic, halt, echo, ginfo");
+    kprintln!("version, help, clear, reboot, panic, halt, echo, ginfo");
 }

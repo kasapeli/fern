@@ -1,5 +1,5 @@
-use crate::vga;
+use crate::flib::kprint::clear_screen;
 
 pub fn exec() {
-    vga::clear_screen();
+    clear_screen();
 }

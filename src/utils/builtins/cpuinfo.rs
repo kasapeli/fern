@@ -1,4 +1,4 @@
-use crate::println;
+use crate::kprintln;
 
 #[derive(Debug)]
 pub struct CpuVendor {
@@ -8,9 +8,9 @@ pub struct CpuVendor {
 pub fn exec() {
     let vendor = get_vendor();
     if let Ok(str) = core::str::from_utf8(&vendor.name) {
-        println!("{}", str);
+        kprintln!("{}", str);
     } else {
-        println!("unknown");
+        kprintln!("unknown");
     }
 }
 

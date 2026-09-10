@@ -1,7 +1,7 @@
-use crate::println;
+use crate::kprintln;
 
 pub fn exec() {
-    println!("halting");
+    kprintln!("halting");
     unsafe {
         core::arch::asm!("cli; hlt");
     }
