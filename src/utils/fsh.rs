@@ -5,7 +5,7 @@ use crate::utils::builtins;
 use crate::vga;
 
 pub fn fsh() {
-    print!("fsh>");
+    print!("fsh> ");
 
     let mut cmdbuf = [0u8; 64];
     let mut index = 0;
@@ -22,7 +22,7 @@ pub fn fsh() {
             }
 
             index = 0;
-            print!("fsh>");
+            print!("fsh> ");
         } else if c == '\x08' {
             if index > 0 {
                 index -= 1;
