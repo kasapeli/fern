@@ -38,7 +38,12 @@ pub extern "C" fn _start() -> ! {
             }
 
             index = 0;
-            print!("fsh> ");
+            print!("fsh>");
+        } else if c == '\x08' {
+            if index > 0 {
+                index -= 1;
+                println::backspace();
+            }
         } else if index < cmdbuf.len() {
             print!("{}", c);
             cmdbuf[index] = c as u8;
