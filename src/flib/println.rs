@@ -55,12 +55,10 @@ impl VgaWriter {
         self.cursor = 24 * 80;
     }
 
-    pub fn putchar(&mut self) {
+    pub fn putchar(&mut self, char: u8) {
         if self.cursor >= 80 * 25 {
             self.scroll();
         }
-
-        let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
 
         if char == b'\n' {
             let row = self.cursor / 80;
@@ -73,6 +71,7 @@ impl VgaWriter {
             return;
         }
 
+        let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
         unsafe {
             write_volatile(ptr, char);
             write_volatile(ptr.add(1), 0x0F);
