@@ -73,6 +73,7 @@ fn exec(cmd: &str) {
             panic!("intentional panic");
         }
         "reboot" => reboot(),
+        "clear" => println::clear_screen(),
         _ => println!("invalid command: {}", cmd),
     }
 }
