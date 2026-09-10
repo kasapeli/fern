@@ -80,8 +80,6 @@ impl VgaWriter {
         self.cursor += 1;
     }
 
-    // why's this in println
-    // consider moving to the keyboard driver smth instead later
     pub fn backspace(&mut self) {
         if self.cursor > 0 {
             self.cursor -= 1;
@@ -122,7 +120,7 @@ macro_rules! print {
     ($($arg:tt)*) => {
         unsafe {
             use core::fmt::Write;
-            let _ = core::write!($crate::println::WRITER, $($arg)*);
+            let _ = core::write!($crate::vga::WRITER, $($arg)*);
         }
     };
 }

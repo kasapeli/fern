@@ -6,7 +6,7 @@ mod drivers;
 mod flib;
 
 use drivers::keyboard;
-use flib::println;
+use flib::vga;
 
 use core::arch::asm;
 use core::panic::PanicInfo;
@@ -44,7 +44,7 @@ pub extern "C" fn _start() -> ! {
         } else if c == '\x08' {
             if index > 0 {
                 index -= 1;
-                println::backspace();
+                vga::backspace();
             }
         } else if index < cmdbuf.len() {
             print!("{}", c);
@@ -73,7 +73,7 @@ fn exec(cmd: &str) {
             panic!("intentional panic");
         }
         "reboot" => reboot(),
-        "clear" => println::clear_screen(),
+        "clear" => vga::clear_screen(),
         _ => println!("invalid command: {}", cmd),
     }
 }
