@@ -5,6 +5,7 @@ use core::ptr::{read_volatile, write_volatile};
 pub struct VgaWriter {
     cursor: usize,
     vga_addr: usize,
+    color_code: u8,
 }
 
 impl VgaWriter {
@@ -12,7 +13,12 @@ impl VgaWriter {
         Self {
             cursor: 0,
             vga_addr: 0xB8000,
+            color_code: 0x0F,
         }
+    }
+
+    pub fn set_color(&mut self, color: u8) {
+        self.color_code = color;
     }
 
     #[inline]
@@ -43,7 +49,7 @@ impl VgaWriter {
             for i in 0..TOTAL {
                 let cell_offset = i * 2;
                 write_volatile(base_ptr.add(cell_offset), b' ');
-                write_volatile(base_ptr.add(cell_offset + 1), 0x0F);
+                write_volatile(base_ptr.add(cell_offset + 1), self.color_code);
             }
         }
         self.cursor = 0;
@@ -70,7 +76,7 @@ impl VgaWriter {
             for col in 0..80 {
                 let offset = (24 * 80 + col) * 2;
                 write_volatile(base_ptr.add(offset), b' ');
-                write_volatile(base_ptr.add(offset + 1), 0x0F);
+                write_volatile(base_ptr.add(offset + 1), self.color_code);
             }
         }
 
@@ -95,7 +101,7 @@ impl VgaWriter {
         let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
         unsafe {
             write_volatile(ptr, char);
-            write_volatile(ptr.add(1), 0x0F);
+            write_volatile(ptr.add(1), self.color_code);
         }
 
         self.cursor += 1;
@@ -107,7 +113,7 @@ impl VgaWriter {
             let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
             unsafe {
                 write_volatile(ptr, b' ');
-                write_volatile(ptr.add(1), 0x0F);
+                write_volatile(ptr.add(1), self.color_code);
             }
             self.update_hardware_cursor();
         }
