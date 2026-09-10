@@ -50,6 +50,7 @@ pub fn exec(cmd: &str) {
         "panic" => builtins::panic::exec(),
         "clear" => builtins::clear::exec(),
         "halt" => builtins::halt::exec(),
+        "ginfo" => builtins::ginfo::exec(&mut parts),
         "reboot" => builtins::reboot::exec(),
         "echo" => builtins::echo::exec(parts),
         _ => {
