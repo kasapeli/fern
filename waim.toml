@@ -6,4 +6,4 @@ completion = true
 [[task]]
 id = 2
 task_name = "seperate shell from main.rs"
-completion = false
+completion = true
