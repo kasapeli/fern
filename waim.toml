@@ -1,0 +1,9 @@
+[[task]]
+id = 1
+task_name = "add handling for backspace"
+completion = false
+
+[[task]]
+id = 2
+task_name = "seperate shell from main.rs"
+completion = false
