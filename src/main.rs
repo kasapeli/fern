@@ -19,8 +19,28 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!("Initializing...");
-    println!("Welcome to Fern!");
+    println!(
+        "
+   :####                                
+   #####                                
+   ##                                   
+ #######    .####:    ##.####  ##.####  
+ #######   .######:   #######  #######  
+   ##      ##:  :##   ###.     ###  :## 
+   ##      ########   ##       ##    ## 
+   ##      ########   ##       ##    ## 
+   ##      ##         ##       ##    ## 
+   ##      ###.  :#   ##       ##    ## 
+   ##      .#######   ##       ##    ## 
+   ##       .#####:   ##       ##    ##
+__________________________________________"
+    );
+    utils::builtins::version::exec();
+    println!(
+        "
+Welcome to Fern!
+    "
+    );
     utils::fsh::fsh();
     loop {}
 }
