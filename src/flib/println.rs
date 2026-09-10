@@ -1,4 +1,5 @@
 use core::fmt;
+use core::ptr::write_volatile;
 
 pub struct VgaWriter {
     cursor: usize,
@@ -13,7 +14,25 @@ impl VgaWriter {
         }
     }
 
+    pub fn clear_screen(&mut self) {
+        const TOTAL: usize = 80 * 25;
+
+        unsafe {
+            let base_ptr = self.vga_addr as *mut u8;
+            for i in 0..TOTAL {
+                let cell_offset = i * 2;
+                write_volatile(base_ptr.add(cell_offset), b' ');
+                write_volatile(base_ptr.add(cell_offset + 1), 0x0F);
+            }
+        }
+        self.cursor = 0;
+    }
+
     pub fn putchar(&mut self, char: u8) {
+        if self.cursor >= 80 * 25 {
+            self.cursor = 0;
+        }
+
         let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
 
         if char == b'\n' {
@@ -28,8 +47,8 @@ impl VgaWriter {
         }
 
         unsafe {
-            *ptr = char;
-            *ptr.add(1) = 0x0F;
+            write_volatile(ptr, char);
+            write_volatile(ptr.add(1), 0x0F);
         }
 
         self.cursor += 1;
@@ -42,8 +61,8 @@ impl VgaWriter {
             self.cursor -= 1;
             let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
             unsafe {
-                *ptr = b' ';
-                *ptr.add(1) = 0x0F;
+                write_volatile(ptr, b' ');
+                write_volatile(ptr.add(1), 0x0F);
             }
         }
     }
@@ -59,6 +78,12 @@ impl fmt::Write for VgaWriter {
 }
 
 pub static mut WRITER: VgaWriter = VgaWriter::new();
+
+pub fn clear_screen() {
+    unsafe {
+        WRITER.clear_screen();
+    }
+}
 
 pub fn backspace() {
     unsafe {
