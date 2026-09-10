@@ -1,7 +1,7 @@
 [[task]]
 id = 1
 task_name = "add handling for backspace"
-completion = false
+completion = true
 
 [[task]]
 id = 2
