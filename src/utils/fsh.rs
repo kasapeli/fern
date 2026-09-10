@@ -37,15 +37,23 @@ pub fn fsh() {
 }
 
 pub fn exec(cmd: &str) {
-    match cmd {
+    let mut parts = cmd.split_whitespace();
+
+    let command = match parts.next() {
+        Some(c) => c,
+        None => return,
+    };
+
+    match command {
         "help" => builtins::help::exec(),
         "version" => builtins::version::exec(),
         "panic" => builtins::panic::exec(),
         "clear" => builtins::clear::exec(),
         "halt" => builtins::halt::exec(),
         "reboot" => builtins::reboot::exec(),
+        "echo" => builtins::echo::exec(parts),
         _ => {
-            println!("fsh: invalid command: {}", cmd);
+            println!("fsh: invalid command: {}", command);
         }
     }
 }
