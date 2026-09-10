@@ -34,6 +34,19 @@ impl VgaWriter {
 
         self.cursor += 1;
     }
+
+    // why's this in println
+    // consider moving to the keyboard driver smth instead later
+    pub fn backspace(&mut self) {
+        if self.cursor > 0 {
+            self.cursor -= 1;
+            let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
+            unsafe {
+                *ptr = b' ';
+                *ptr.add(1) = 0x0F;
+            }
+        }
+    }
 }
 
 impl fmt::Write for VgaWriter {
@@ -46,6 +59,12 @@ impl fmt::Write for VgaWriter {
 }
 
 pub static mut WRITER: VgaWriter = VgaWriter::new();
+
+pub fn backspace() {
+    unsafe {
+        WRITER.backspace();
+    }
+}
 
 #[macro_export]
 macro_rules! print {
