@@ -56,6 +56,7 @@ pub fn scancode_to_char(scancode: u8) -> char {
         0x31 => 'n',
         0x32 => 'm',
         0x39 => ' ',
+        0x0E => '\x08',
         0x1C => '\n',
         _ => '\0',
     }
