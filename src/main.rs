@@ -67,6 +67,6 @@ fn exec(cmd: &str) {
                 core::arch::asm!("cli; hlt");
             }
         }
-        _ => println!("invalid command: {}.", cmd),
+        _ => println!("invalid command: {}", cmd),
     }
 }
