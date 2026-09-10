@@ -1,5 +1,5 @@
 use core::fmt;
-use core::ptr::write_volatile;
+use core::ptr::{read_volatile, write_volatile};
 
 pub struct VgaWriter {
     cursor: usize,
@@ -28,9 +28,36 @@ impl VgaWriter {
         self.cursor = 0;
     }
 
-    pub fn putchar(&mut self, char: u8) {
+    pub fn scroll(&mut self) {
+        unsafe {
+            let base_ptr = self.vga_addr as *mut u8;
+
+            for row in 1..25 {
+                for col in 0..80 {
+                    let dest_offset = ((row - 1) * 80 + col) * 2;
+                    let src_offset = (row * 80 + col) * 2;
+
+                    let char_byte = read_volatile(base_ptr.add(src_offset));
+                    let attr_byte = read_volatile(base_ptr.add(src_offset + 1));
+
+                    write_volatile(base_ptr.add(dest_offset), char_byte);
+                    write_volatile(base_ptr.add(dest_offset + 1), attr_byte);
+                }
+            }
+
+            for col in 0..80 {
+                let offset = (24 * 80 + col) * 2;
+                write_volatile(base_ptr.add(offset), b' ');
+                write_volatile(base_ptr.add(offset + 1), 0x0F);
+            }
+        }
+
+        self.cursor = 24 * 80;
+    }
+
+    pub fn putchar(&mut self) {
         if self.cursor >= 80 * 25 {
-            self.cursor = 0;
+            self.scroll();
         }
 
         let ptr = (self.vga_addr + self.cursor * 2) as *mut u8;
@@ -40,7 +67,7 @@ impl VgaWriter {
             self.cursor = (row + 1) * 80;
 
             if self.cursor >= 80 * 25 {
-                self.cursor = 0;
+                self.scroll();
             }
 
             return;
