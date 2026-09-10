@@ -1,11 +1,10 @@
 use crate::drivers::keyboard;
-use crate::print;
-use crate::println;
+use crate::flib::kprint;
 use crate::utils::builtins;
-use crate::vga;
+use crate::{kprint, kprintln};
 
 pub fn fsh() {
-    print!("fsh> ");
+    kprint!("fsh> ");
 
     let mut cmdbuf = [0u8; 64];
     let mut index = 0;
@@ -13,7 +12,7 @@ pub fn fsh() {
     loop {
         let c = keyboard::read_char();
         if c == '\n' {
-            println!("");
+            kprintln!("");
 
             if index > 0 {
                 if let Ok(cmd) = core::str::from_utf8(&cmdbuf[..index]) {
@@ -22,14 +21,14 @@ pub fn fsh() {
             }
 
             index = 0;
-            print!("fsh> ");
+            kprint!("fsh> ");
         } else if c == '\x08' {
             if index > 0 {
                 index -= 1;
-                vga::backspace();
+                kprint::backspace();
             }
         } else if index < cmdbuf.len() {
-            print!("{}", c);
+            kprint!("{}", c);
             cmdbuf[index] = c as u8;
             index += 1;
         }
@@ -54,7 +53,7 @@ pub fn exec(cmd: &str) {
         "reboot" => builtins::reboot::exec(),
         "echo" => builtins::echo::exec(parts),
         _ => {
-            println!("fsh: invalid command: {}", command);
+            kprintln!("fsh: invalid command: {}", command);
         }
     }
 }

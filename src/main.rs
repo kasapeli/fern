@@ -6,7 +6,7 @@ mod drivers;
 mod flib;
 mod utils;
 
-use flib::vga;
+use crate::drivers::vga::WRITER;
 
 use core::{arch::asm, panic::PanicInfo};
 
@@ -17,13 +17,13 @@ fn panic(info: &PanicInfo) -> ! {
     }
 
     unsafe {
-        crate::vga::WRITER.set_color(0x1F);
-        crate::vga::WRITER.clear_screen();
+        WRITER.set_color(0x1F);
+        WRITER.clear_screen();
     }
 
-    println!("!!! KERNEL PANIC !!!");
-    println!("{}", info);
-    println!("q to reboot");
+    kprintln!("!!! KERNEL PANIC !!!");
+    kprintln!("{}", info);
+    kprintln!("q to reboot");
 
     loop {
         unsafe {
@@ -45,7 +45,7 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!(
+    kprintln!(
         "
    :####                                
    #####                                
@@ -62,7 +62,7 @@ pub extern "C" fn _start() -> ! {
 __________________________________________"
     );
     utils::builtins::version::exec();
-    println!(
+    kprintln!(
         "
 Welcome to Fern!
     "

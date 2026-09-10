@@ -1,1 +1,1 @@
-pub mod vga;
+pub mod kprint;
