@@ -41,6 +41,11 @@ __________________________________________"
 Welcome to Fern!
     "
     );
-    utils::fsh::fsh();
-    loop {}
+    loop {
+        utils::fsh::fsh();
+
+        unsafe {
+            core::arch::asm!("sti", "hlt", options(nomem, nostack, preserves_flags));
+        }
+    }
 }
