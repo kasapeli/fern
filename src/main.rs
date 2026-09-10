@@ -8,11 +8,12 @@ mod flib;
 use drivers::keyboard;
 use flib::println;
 
+use core::arch::asm;
 use core::panic::PanicInfo;
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    println!("KERNEL PANIC!");
+    println!("!!! KERNEL PANIC !!!");
     println!("{}", info);
     loop {}
 }
@@ -21,6 +22,7 @@ fn panic(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     println!("Initializing...");
     println!("Welcome to Fern!");
+
     print!("fsh>");
 
     let mut cmdbuf = [0u8; 64];
@@ -67,6 +69,31 @@ fn exec(cmd: &str) {
                 core::arch::asm!("cli; hlt");
             }
         }
+        "panic" => {
+            panic!("intentional panic");
+        }
+        "reboot" => reboot(),
         _ => println!("invalid command: {}", cmd),
+    }
+}
+
+pub fn reboot() -> ! {
+    println!("see you again!");
+    unsafe {
+        loop {
+            let mut status: u8;
+            asm!("in al, 0x64", out("al") status, options(nomem, nostack));
+            if (status & 0x02) == 0 {
+                break;
+            }
+        }
+
+        asm!("out 0x64, al", in("al") 0xFEu8, options(nomem, nostack));
+    }
+
+    loop {
+        unsafe {
+            asm!("hlt", options(nomem, nostack));
+        }
     }
 }
