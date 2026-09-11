@@ -22,23 +22,23 @@ impl VgaWriter {
     }
 
     #[inline]
-    unsafe fn outb(port: u16, val: u8) {
-        asm!(
-            "out dx, al",
-            in("dx") port,
-            in("al") val,
-            options(nomem, nostack, preserves_flags)
-        );
+    fn outb(port: u16, val: u8) {
+        unsafe {
+            asm!(
+                "out dx, al",
+                in("dx") port,
+                in("al") val,
+                options(nomem, nostack, preserves_flags)
+            );
+        }
     }
 
     pub fn update_hardware_cursor(&self) {
-        unsafe {
-            Self::outb(0x3D4, 0x0F);
-            Self::outb(0x3D5, (self.cursor & 0xFF) as u8);
+        Self::outb(0x3D4, 0x0F);
+        Self::outb(0x3D5, (self.cursor & 0xFF) as u8);
 
-            Self::outb(0x3D4, 0x0E);
-            Self::outb(0x3D5, ((self.cursor >> 8) & 0xFF) as u8);
-        }
+        Self::outb(0x3D4, 0x0E);
+        Self::outb(0x3D5, ((self.cursor >> 8) & 0xFF) as u8);
     }
 
     pub fn clear_screen(&mut self) {
