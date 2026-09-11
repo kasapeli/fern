@@ -1,5 +1,4 @@
 use crate::drivers::vga::WRITER;
-use core::fmt::Write;
 
 pub fn clear_screen() {
     unsafe {
