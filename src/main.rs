@@ -6,7 +6,7 @@ mod drivers;
 mod flib;
 mod utils;
 
-use crate::drivers::vga::WRITER;
+use crate::flib::kprint;
 
 use core::{arch::asm, panic::PanicInfo};
 
@@ -16,10 +16,8 @@ fn panic(info: &PanicInfo) -> ! {
         core::arch::asm!("cli", options(nomem, nostack));
     }
 
-    unsafe {
-        WRITER.set_color(0x1F);
-        WRITER.clear_screen();
-    }
+    kprint::set_color(0x1F);
+    kprint::clear_screen();
 
     kprintln!("!!! KERNEL PANIC !!!");
     kprintln!("{}", info);
