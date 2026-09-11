@@ -43,7 +43,7 @@ pub fn exec(cmd: &str) {
     };
 
     match command {
-        "help" => builtins::help::exec(),
+        "help" => builtins::help::exec(parts),
         "version" => builtins::version::exec(),
         "panic" => builtins::panic::exec(),
         "clear" => builtins::clear::exec(),
