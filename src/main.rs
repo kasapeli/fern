@@ -40,9 +40,11 @@ pub extern "C" fn _start() -> ! {
         let heap_size = HEAP_MEM.len();
         ALLOCATOR.init(heap_start, heap_size);
     }
+
     let mut v: Vec<u8> = alloc::vec::Vec::new();
     v.push(42);
-    kprintln!("alloc test: {}", v[0]);
+    kprintln!("heap: OK");
+
     kprintln!(
         "
    :####                                
