@@ -20,17 +20,17 @@ use core::{arch::asm, panic::PanicInfo};
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    unsafe {
-        asm!("cli", "hlt", options(nomem, nostack));
-    }
-
     kprint::set_color(0x1F);
     kprint::clear_screen();
 
     kprintln!("!!! KERNEL PANIC !!!");
     kprintln!("{}", info);
 
-    loop {}
+    loop {
+        unsafe {
+            asm!("cli", "hlt", options(nomem, nostack));
+        }
+    }
 }
 
 #[unsafe(no_mangle)]
