@@ -1,12 +1,17 @@
-use crate::kprintln;
+extern crate alloc;
 
-pub fn exec(args: &mut core::str::SplitWhitespace) {
-    match args.next() {
-        Some("cpu") => crate::utils::builtins::cpuinfo::exec(),
-        Some("help") => help(),
-        None => {
-            kprintln!("no arguments provided, try ginfo help");
-        }
+use crate::kprintln;
+use crate::utils::builtins::cpuinfo;
+
+pub fn exec(args: &[&str]) {
+    if args.is_empty() {
+        kprintln!("no argument provided, try ginfo help");
+        return;
+    }
+
+    match args[0] {
+        "help" => help(),
+        "cpu" => cpuinfo::exec(),
         _ => {
             kprintln!("invalid argument, try ginfo help");
         }

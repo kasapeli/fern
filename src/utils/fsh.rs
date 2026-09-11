@@ -1,56 +1,56 @@
+extern crate alloc;
+
 use crate::drivers::keyboard;
 use crate::utils::builtins;
 use crate::{kprint, kprintln};
+use alloc::string::String;
+use alloc::vec::Vec;
 
 pub fn fsh() {
     kprint!("fsh> ");
 
-    let mut cmdbuf = [0u8; 64];
-    let mut index = 0;
+    let mut cmd = String::new();
 
     loop {
         let c = keyboard::read_char();
+
         if c == '\n' {
             kprintln!("");
 
-            if index > 0 {
-                if let Ok(cmd) = core::str::from_utf8(&cmdbuf[..index]) {
-                    exec(cmd);
+            if !cmd.is_empty() {
+                let tokens: Vec<&str> = cmd.split_whitespace().collect();
+                if !tokens.is_empty() {
+                    exec(&tokens);
                 }
             }
 
-            index = 0;
+            cmd.clear();
             kprint!("fsh> ");
         } else if c == '\x08' {
-            if index > 0 {
-                index -= 1;
+            if !cmd.is_empty() {
+                cmd.pop();
                 kprint::backspace();
             }
-        } else if index < cmdbuf.len() {
+        } else {
             kprint!("{}", c);
-            cmdbuf[index] = c as u8;
-            index += 1;
+            cmd.push(c);
         }
     }
 }
 
-pub fn exec(cmd: &str) {
-    let mut parts = cmd.split_whitespace();
-
-    let command = match parts.next() {
-        Some(c) => c,
-        None => return,
-    };
+pub fn exec(tokens: &[&str]) {
+    let command = tokens[0];
+    let args = &tokens[1..];
 
     match command {
-        "help" => builtins::help::exec(&mut parts),
+        "help" => builtins::help::exec(args),
         "version" => builtins::version::exec(),
         "panic" => builtins::panic::exec(),
         "clear" => builtins::clear::exec(),
         "halt" => builtins::halt::exec(),
-        "ginfo" => builtins::ginfo::exec(&mut parts),
+        "ginfo" => builtins::ginfo::exec(args),
         "reboot" => builtins::reboot::exec(),
-        "echo" => builtins::echo::exec(parts),
+        "echo" => builtins::echo::exec(args),
         _ => {
             kprintln!("fsh: invalid command: {}", command);
         }

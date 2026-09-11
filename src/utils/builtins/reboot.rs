@@ -2,7 +2,6 @@ use crate::kprintln;
 use core::arch::asm;
 
 pub fn exec() -> ! {
-    kprintln!("see you again!");
     unsafe {
         loop {
             let mut status: u8;
