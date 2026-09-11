@@ -1,18 +1,19 @@
-unsafe fn inb(port: u16) -> u8 {
+fn inb(port: u16) -> u8 {
     let value: u8;
-    core::arch::asm!(
-        "in al, dx",
-        out("al") value,
-        in("dx") port,
-        options(nomem, nostack, preserves_flags)
-    );
+    unsafe {
+        core::arch::asm!(
+            "in al, dx",
+            out("al") value,
+            in("dx") port,
+            options(nomem, nostack, preserves_flags)
+        );
+    }
     value
 }
+
 pub fn get_scancode() -> u8 {
-    unsafe {
-        if (inb(0x64) & 0x01) != 0 {
-            return inb(0x60);
-        }
+    if (inb(0x64) & 0x01) != 0 {
+        return inb(0x60);
     }
     0
 }
