@@ -2,7 +2,7 @@
 #![no_main]
 #![allow(static_mut_refs)]
 
-static mut HEAP_MEM: [u8; 8 * 1024 * 1024] = [0; 8 * 1024 * 1024];
+static mut HEAP_MEM: [u8; 256 * 1024] = [0; 256 * 1024];
 
 #[global_allocator]
 static ALLOCATOR: flib::kmalloc::Allocator = flib::kmalloc::Allocator::new();
