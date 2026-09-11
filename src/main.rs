@@ -2,9 +2,17 @@
 #![no_main]
 #![allow(static_mut_refs)]
 
+static mut HEAP_MEM: [u8; 32 * 1024 * 1024] = [0; 32 * 1024 * 1024];
+
+#[global_allocator]
+static ALLOCATOR: flib::kmalloc::Allocator = flib::kmalloc::Allocator::new();
+
 mod drivers;
 mod flib;
 mod utils;
+
+extern crate alloc;
+use alloc::vec::Vec;
 
 use crate::flib::kprint;
 
@@ -27,6 +35,14 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
+    unsafe {
+        let heap_start = HEAP_MEM.as_ptr() as usize;
+        let heap_size = HEAP_MEM.len();
+        ALLOCATOR.init(heap_start, heap_size);
+    }
+    let mut v: Vec<u8> = alloc::vec::Vec::new();
+    v.push(42);
+    kprintln!("alloc test: {}", v[0]);
     kprintln!(
         "
    :####                                
