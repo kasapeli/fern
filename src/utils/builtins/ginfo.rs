@@ -1,7 +1,7 @@
 extern crate alloc;
 
 use crate::kprintln;
-use crate::utils::builtins::cpuinfo;
+use crate::utils::builtins::*;
 
 pub fn exec(args: &[&str]) {
     if args.is_empty() {
@@ -12,6 +12,7 @@ pub fn exec(args: &[&str]) {
     match args[0] {
         "help" => help(),
         "cpu" => cpuinfo::exec(),
+        "heap" => heapinfo::exec(),
         _ => {
             kprintln!("invalid argument, try ginfo help");
         }
