@@ -3,6 +3,7 @@ pub mod cpuinfo;
 pub mod echo;
 pub mod ginfo;
 pub mod halt;
+pub mod heapinfo;
 pub mod help;
 pub mod panic;
 pub mod reboot;
