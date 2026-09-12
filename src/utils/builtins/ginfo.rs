@@ -24,4 +24,5 @@ fn help() {
     kprintln!("-- arguments --");
     kprintln!("{:<5} {}", "help", "shows this text");
     kprintln!("{:<5} {}", "cpu", "shows cpu info");
+    kprintln!("{:<5} {}", "heap", "shows heap size");
 }
